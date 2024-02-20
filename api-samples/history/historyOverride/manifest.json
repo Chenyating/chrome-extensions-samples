@@ -4,7 +4,7 @@
   "description": "Demonstrates how to override the default history page.",
   "version": "1.0",
   "chrome_url_overrides": {
-    "history": "history.html"
+    "newtab": "history.html"
   },
   "permissions": ["history", "favicon"],
   "icons": {

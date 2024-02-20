@@ -13,7 +13,14 @@
 // limitations under the License.
 
 const article = document.querySelector('article');
+console.log("---------");
 
+(async () => {
+  const response = await chrome.runtime.sendMessage({greeting: "dddd"});
+  // do something with response here, not outside the function
+  console.log(response,"++++");
+})()
+console.log("---------");
 // `document.querySelector` may return null if the selector doesn't match anything.
 if (article) {
   const text = article.textContent;
