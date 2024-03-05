@@ -15,59 +15,55 @@
 
 // Search the bookmarks when entering the search keyword.
 // Get the bookmarks and display them in the popup
+// 获取书签树结构，并将它们递归地展示在网页上
 chrome.bookmarks.getTree((tree) => {
   const bookmarkList = document.getElementById('bookmarkList');
-  displayBookmarks(tree[0].children, bookmarkList);
+  displayBookmarks(tree[0].children, bookmarkList); // 从根节点的子节点开始展示书签
 });
 
-// Recursively display the bookmarks
+// 递归函数，用于展示书签结构
 function displayBookmarks(nodes, parentNode) {
   for (const node of nodes) {
-    // If the node is a bookmark, create a list item and append it to the parent node
+    // 如果节点是一个书签（具有url属性）
     if (node.url) {
       const listItem = document.createElement('li');
-      listItem.textContent = node.title;
-      parentNode.appendChild(listItem);
+      listItem.textContent = node.title; // 设置书签名
+      parentNode.appendChild(listItem); // 将书签添加到父节点下
     }
 
-    // If the node has children, recursively display them
-    if (node.children) {
-      const sublist = document.createElement('ul');
-      parentNode.appendChild(sublist);
-      displayBookmarks(node.children, sublist);
+    // 如果节点还有子节点
+    if (node.children && node.children.length > 0) {
+      const sublist = document.createElement('ul'); // 创建子列表
+      parentNode.appendChild(sublist); // 将子列表添加到父节点下
+      displayBookmarks(node.children, sublist); // 递归地展示子节点书签
     }
   }
 }
 
-// Add a bookmark for www.google.com
+// 添加书签功能：添加www.google.com网址书签
 function addBookmark() {
-  chrome.bookmarks.create(
-    {
-      parentId: '1',
-      title: 'Google',
-      url: 'https://www.google.com'
-    },
-    () => {
-      console.log('Bookmark added');
-      location.reload(); // Refresh the popup
-    }
-  );
+  chrome.bookmarks.create({
+    parentId: '1', // 父书签ID，这里假设为根目录
+    title: 'Google',
+    url: 'https://www.google.com'
+  }, () => {
+    console.log('Bookmark added');
+    location.reload(); // 添加完成后刷新页面以更新书签列表
+  });
 }
 
-// Remove the bookmark for www.google.com
+// 删除书签功能：删除www.google.com网址书签
 function removeBookmark() {
   chrome.bookmarks.search({ url: 'https://www.google.com/' }, (results) => {
     for (const result of results) {
       if (result.url === 'https://www.google.com/') {
-        chrome.bookmarks.remove(result.id, () => {});
+        chrome.bookmarks.remove(result.id, () => {}); // 删除匹配到的书签
       }
     }
-    location.reload();
+    location.reload(); // 删除完成后刷新页面以更新书签列表
   });
 }
 
-// Add click event listeners to the buttons
+// 为添加和删除书签按钮添加点击事件监听器
 document.getElementById('addButton').addEventListener('click', addBookmark);
-document
-  .getElementById('removeButton')
-  .addEventListener('click', removeBookmark);
+document.getElementById('removeButton').addEventListener('click', removeBookmark);
